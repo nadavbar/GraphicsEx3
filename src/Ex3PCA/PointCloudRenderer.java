@@ -72,6 +72,18 @@ public class PointCloudRenderer
 				{
 					// TODO: use the size parameter
 					imageData[pixel.getY()][pixel.getX()] = new Color(cloud.getColor());
+					int radius = (int) Math.ceil(cloud.getSize() / pixel.getDistance());
+					
+					for (int i= (pixel.getX() - radius); i < (pixel.getX() + radius); i++)
+					{
+						for (int j= (pixel.getY() - radius); j < (pixel.getY() + radius); j++)
+						{
+							if (i>= 0 && i < _width && j>=0 && j < _height)
+							{
+								imageData[pixel.getY()][pixel.getX()] = new Color(cloud.getColor());
+							}
+						}
+					}
 				}
 			}
 		}
@@ -82,6 +94,7 @@ public class PointCloudRenderer
 	private Pixel project3DPointTo2D(Vector3D point)
 	{
 		Vector3D pointCameraRay = point.sub(_camera.getPosition());
+		
 		double ratio = pointCameraRay.dotProduct(_camera.getDirection()) / _camera.getScreenDistance();
 		Vector3D projection = pointCameraRay.multByScalar(1.0 / ratio).add(_camera.getPosition());
 		// TODO: maybe calculate in the other direction
@@ -94,7 +107,7 @@ public class PointCloudRenderer
 			return null;
 		}
 		
-		int xCoordinate = (int) ((widthRatio + 1.0)* _widthDouble - _widthDouble/2.0);
+		int xCoordinate = (int) Math.ceil(widthRatio * _widthDouble + _widthDouble/2.0);
 		
 		double yAxisDistance = betweenVector.dotProduct(_cameraViewPlane.getVy());
 		double heightRatio = yAxisDistance / _screenHeight;
@@ -104,7 +117,7 @@ public class PointCloudRenderer
 			return null;
 		}
 		
-		int yCoordinate = (int) (((heightRatio + 1.0) * _heightDouble) - _heightDouble/2.0);
+		int yCoordinate = (int) Math.ceil(heightRatio * _heightDouble + _heightDouble/2.0);
 		
 		if (xCoordinate < 0 || yCoordinate < 0 || xCoordinate >= _width || yCoordinate >= _height )
 		{

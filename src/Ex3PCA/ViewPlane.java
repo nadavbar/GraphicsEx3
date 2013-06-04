@@ -27,6 +27,7 @@ public class ViewPlane
 		_vz = camera.getDirection();
 		_vx = camera.getUpVector().crossProduct(_vz);
 		_vy = _vx.crossProduct(_vz);
+		
 		_center = _camera.getPosition().add(_vz.multByScalar(_camera.getScreenDistance()));
 	}
 	
