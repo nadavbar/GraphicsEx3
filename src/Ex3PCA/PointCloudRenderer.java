@@ -65,30 +65,49 @@ public class PointCloudRenderer
 		
 		for (PointCloud cloud : _clouds)
 		{
-			for (Point p : cloud.getPoints())
+			BoundingBox box = new BoundingBox(cloud);
+			PointCloud boundingBoxCloud = box.calculate();
+			drawCloud(boundingBoxCloud, imageData);
+			
+			// print the bounding box
+			for (Point point : boundingBoxCloud.getPoints())
 			{
-				Pixel pixel = project3DPointTo2D(p.getPoint());
-				if (pixel != null)
+				System.out.println(point.getPoint().toString());
+			}
+			
+			drawCloud(cloud, imageData);
+			
+		}
+		
+		return imageData;
+	}
+	
+	private void drawCloud(PointCloud cloud, Color[][] imageData)
+	{
+		for (Point p : cloud.getPoints())
+		{
+			Pixel pixel = project3DPointTo2D(p.getPoint());
+			if (pixel != null)
+			{
+				// TODO: use the size parameter
+				imageData[pixel.getY()][pixel.getX()] = new Color(cloud.getColor());
+				int radius = (int) Math.ceil((cloud.getSize() / pixel.getDistance())/2.0);
+				radius = Math.max(1, radius);
+				
+				imageData[pixel.getY()][pixel.getX()] = cloud.getColor();
+				// TODO: check this
+				for (int i= (pixel.getX() - radius); i < (pixel.getX() + radius); i++)
 				{
-					// TODO: use the size parameter
-					imageData[pixel.getY()][pixel.getX()] = new Color(cloud.getColor());
-					int radius = (int) Math.ceil(cloud.getSize() / pixel.getDistance());
-					
-					for (int i= (pixel.getX() - radius); i < (pixel.getX() + radius); i++)
+					for (int j= (pixel.getY() - radius); j < (pixel.getY() + radius); j++)
 					{
-						for (int j= (pixel.getY() - radius); j < (pixel.getY() + radius); j++)
+						if (i>= 0 && i < _width && j>=0 && j < _height)
 						{
-							if (i>= 0 && i < _width && j>=0 && j < _height)
-							{
-								imageData[pixel.getY()][pixel.getX()] = new Color(cloud.getColor());
-							}
+							imageData[j][i] = new Color(cloud.getColor());
 						}
 					}
 				}
 			}
 		}
-		
-		return imageData;
 	}
 	
 	private Pixel project3DPointTo2D(Vector3D point)

@@ -126,6 +126,6 @@ public class Vector3D
 	 */
 	public String toString()
 	{
-		return String.format("(%.2f,%.2f,%.2f)", _x,_y,_z); 
+		return String.format("%f,%f,%f", _x,_y,_z); 
 	}
 }
