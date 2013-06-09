@@ -5,7 +5,6 @@ import java.awt.color.*;
 import java.awt.image.*;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -140,7 +139,7 @@ public class Ex3Main {
 				}
 			}
 			
-			_pointCloudRenderer = new PointCloudRenderer(camera, _settings, clouds, _imageWidth, _imageHeight);
+			_pointCloudRenderer = new PointCloudRenderer(camera, clouds, _imageWidth, _imageHeight);
 		}
 		finally
 		{
@@ -153,7 +152,6 @@ public class Ex3Main {
 	
 	private ArrayList<Point> getPointsFromPlyFile(String fileName) throws IOException
 	{
-		// TODO: Add parsing according to the file contents
 		FileReader fr = new FileReader(fileName);
 		BufferedReader r = new BufferedReader(fr);
 		boolean headerEnded = false;
@@ -162,13 +160,11 @@ public class Ex3Main {
 		try 
 		{
 			String line = null;
-			int lineNum = 0;
 			System.out.println("Started parsing ply file " + fileName);
 			
 			while ((line = r.readLine()) != null)
 			{
 				line = line.trim();
-				++lineNum;
 	
 				if (line.isEmpty() )
 				{  // This line in the scene file is a comment
